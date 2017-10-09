@@ -1,0 +1,28 @@
+{
+  "name": "screen",
+  "version": "1.0.0",
+  "description": "网页截图",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "p": "node_modules/.bin/phantomjs ./src/index.js",
+    "build": "babel src -d dist"
+  },
+  "keywords": [
+    "网页截图",
+    "node"
+  ],
+  "author": "Albert <albert_p@foxmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "phantom": "^4.0.5",
+    "qiniu": "^7.0.5",
+    "url-to-screenshot": "^0.6.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.0.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "phantomjs": "^2.1.7+deprecated"
+  }
+}
