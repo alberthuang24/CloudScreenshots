@@ -4,7 +4,7 @@ var page = require('webpage').create(),
 
 address = system.args[1];
 output = system.args[2];
-page.viewportSize = {width: 1080, height: 100000};
+page.viewportSize = {width: 1920, height: 100000};
 // page.settings.userAgent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1';
 page.onConsoleMessage = function (msg, lineNum, sourceId) {
     console.log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
@@ -13,12 +13,11 @@ page.onConsoleMessage = function (msg, lineNum, sourceId) {
         var bb = page.evaluate(function () {
             return document.getElementsByTagName('html')[0].getBoundingClientRect();
         });
-        page.zoomFactor = 2.0;
         page.clipRect = {
             top: 0,
             left: 0,
             width: bb.width,
-            height: (bb.height * page.zoomFactor)
+            height: (bb.height)
         };
         page.render(output, {format: 'png', quality: 100});
         page.close();
@@ -112,3 +111,4 @@ page.open(address, function (status) {
         } else takeShot();
     });
 });
+
