@@ -77,53 +77,55 @@ page.open(address, function (status) {
             function takeShot() {
                 window.setTimeout(function () {
                     console.log("eme_render");
-                }, 10000);
+                }, 1000);
             }
 
-            if (Element.prototype.remove = function () {
-                    this.parentElement.removeChild(this)
-                }, NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
-                    for (var e = this.length - 1; e >= 0; e--)this[e] && this[e].parentElement && this[e].parentElement.removeChild(this[e])
-                }, console.log("tamper monkey is coming ..."), isMobile())try {
-                var screenHeight = (700 || window.screen.availHeight), step = 500, currentToTop = 0, finalHeight = 0, timer = setInterval(function (e) {
-                    if (currentToTop += step, window.scrollTo(0, currentToTop), console.log("距离顶部：" + (document.body.scrollTop || document.documentElement.scrollTop), screenHeight), console.log("当前:", currentToTop, window.document.body.scrollHeight - (document.body.scrollTop || document.documentElement.scrollTop), screenHeight), currentToTop >= e || window.document.body.scrollHeight - (document.body.scrollTop || document.documentElement.scrollTop) <= screenHeight) {
-                        clearInterval(timer),
-                            console.log("已滚动到目标底部: " + window.document.body.scrollHeight + "（正文总高）; " + (document.body.scrollTop || document.documentElement.scrollTop) + "（到正文顶部距离）; "),
-                            window.document.body.scrollHeight <= window.screen.availHeight ? finalHeight = window.screen.availHeight : window.document.body.scrollHeight <= e && (finalHeight = window.document.body.scrollHeight),
-                            console.log("availHeight", window.screen.availHeight),
-                            console.log("scrollHeight", window.document.body.scrollHeight), console.log("finalHeight", finalHeight), "rgba(0, 0, 0, 0)" === window.getComputedStyle(document.body).backgroundColor && (document.body.style.backgroundColor = "#ffffff"),
-                            hideUseless();
-                        for (var t = document.all, o = t.length, n = document.getElementsByTagName("img"), r = n.length, i = [], l = /^data:image\/.*$/, a = /^(https?:)?(\/\/\w+(\.\w+)+(\/[\w\.\-\!.]+)+)(\.jpg|png|jpeg|webp)(.*\.(jpg|png|jpeg|webp))$/, g = 0; g < o; g++) {
-                            var c = t[g];
-                            "fixed" === window.getComputedStyle(c).backgroundAttachment && (c.style.backgroundAttachment = "scroll", c.style.backgroundRepeat = "repeat")
-                        }
-                        for (var s = 0; s < r; ++s) {
-                            var d = !1;
-                            a.test(n[s].src) ? d = !0 : n[s].getAttribute("dataimg") && l.test(n[s].getAttribute("dataimg")) && (d = !0), d && i.push(s)
-                        }
-                        var m = 0, h = i.length;
-                        if (console.log("img tag nums : ", r), console.log("shrinked img nums : ", h), h > 0)for (var u = 0; u < h; u++) {
-                            var f = "";
-                            a.test(n[i[u]].src) ? f = n[i[u]].src : n[i[u]].getAttribute("dataimg") && l.test(n[i[u]].getAttribute("dataimg")) && (f = n[i[u]].getAttribute("dataimg"));
-                            var p = carateATagWithHerf(f), w = p.hostname, v = p.pathname, b = v.split("."), y = "", H = !1, k = "", T = "";
-                            if (b) {
-                                for (var S = 0; S < b.length; ++S) {
-                                    if (k = b[S].substr(0, 3), T = b[S].substr(0, 4), "jpg" == k || "png" == k || "jpeg" == T) {
-                                        H = "jpg" == k || "png" == k ? k : "jpeg" == T && T;
-                                        break
-                                    }
-                                    y += b[S] + "."
-                                }
-                                H !== !1 && (originSrc = "https://" + w + y + H, n[i[u]].src = originSrc, n[i[u]].onload = function () {
-                                    m++, console.log("Loaded shrink image ", m, " of ", h), m >= h && takeShot()
-                                })
+            window.setTimeout(function(){
+                if (Element.prototype.remove = function () {
+                        this.parentElement.removeChild(this)
+                    }, NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
+                        for (var e = this.length - 1; e >= 0; e--)this[e] && this[e].parentElement && this[e].parentElement.removeChild(this[e])
+                    }, console.log("tamper monkey is coming ..."), isMobile())try {
+                    var screenHeight = (700 || window.screen.availHeight), step = 500, currentToTop = 0, finalHeight = 0, timer = setInterval(function (e) {
+                        if (currentToTop += step, window.scrollTo(0, currentToTop), console.log("距离顶部：" + (document.body.scrollTop || document.documentElement.scrollTop), screenHeight), console.log("当前:", currentToTop, window.document.body.scrollHeight - (document.body.scrollTop || document.documentElement.scrollTop), screenHeight), currentToTop >= e || window.document.body.scrollHeight - (document.body.scrollTop || document.documentElement.scrollTop) <= screenHeight) {
+                            clearInterval(timer),
+                                console.log("已滚动到目标底部: " + window.document.body.scrollHeight + "（正文总高）; " + (document.body.scrollTop || document.documentElement.scrollTop) + "（到正文顶部距离）; "),
+                                window.document.body.scrollHeight <= window.screen.availHeight ? finalHeight = window.screen.availHeight : window.document.body.scrollHeight <= e && (finalHeight = window.document.body.scrollHeight),
+                                console.log("availHeight", window.screen.availHeight),
+                                console.log("scrollHeight", window.document.body.scrollHeight), console.log("finalHeight", finalHeight), "rgba(0, 0, 0, 0)" === window.getComputedStyle(document.body).backgroundColor && (document.body.style.backgroundColor = "#ffffff"),
+                                hideUseless();
+                            for (var t = document.all, o = t.length, n = document.getElementsByTagName("img"), r = n.length, i = [], l = /^data:image\/.*$/, a = /^(https?:)?(\/\/\w+(\.\w+)+(\/[\w\.\-\!.]+)+)(\.jpg|png|jpeg|webp)(.*\.(jpg|png|jpeg|webp))$/, g = 0; g < o; g++) {
+                                var c = t[g];
+                                "fixed" === window.getComputedStyle(c).backgroundAttachment && (c.style.backgroundAttachment = "scroll", c.style.backgroundRepeat = "repeat")
                             }
-                        } else takeShot()
-                    }
-                }, 1e3)
-            } catch (e) {
-                console.log(e)
-            } else takeShot();
+                            for (var s = 0; s < r; ++s) {
+                                var d = !1;
+                                a.test(n[s].src) ? d = !0 : n[s].getAttribute("dataimg") && l.test(n[s].getAttribute("dataimg")) && (d = !0), d && i.push(s)
+                            }
+                            var m = 0, h = i.length;
+                            if (console.log("img tag nums : ", r), console.log("shrinked img nums : ", h), h > 0)for (var u = 0; u < h; u++) {
+                                var f = "";
+                                a.test(n[i[u]].src) ? f = n[i[u]].src : n[i[u]].getAttribute("dataimg") && l.test(n[i[u]].getAttribute("dataimg")) && (f = n[i[u]].getAttribute("dataimg"));
+                                var p = carateATagWithHerf(f), w = p.hostname, v = p.pathname, b = v.split("."), y = "", H = !1, k = "", T = "";
+                                if (b) {
+                                    for (var S = 0; S < b.length; ++S) {
+                                        if (k = b[S].substr(0, 3), T = b[S].substr(0, 4), "jpg" == k || "png" == k || "jpeg" == T) {
+                                            H = "jpg" == k || "png" == k ? k : "jpeg" == T && T;
+                                            break
+                                        }
+                                        y += b[S] + "."
+                                    }
+                                    H !== !1 && (originSrc = "https://" + w + y + H, n[i[u]].src = originSrc, n[i[u]].onload = function () {
+                                        m++, console.log("Loaded shrink image ", m, " of ", h), m >= h && takeShot()
+                                    })
+                                }
+                            } else takeShot()
+                        }
+                    }, 1e3)
+                } catch (e) {
+                    console.log(e)
+                } else takeShot();
+            },5000);
         }
     });
 });
