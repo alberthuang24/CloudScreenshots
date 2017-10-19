@@ -18,14 +18,14 @@ page.onConsoleMessage = function (msg, lineNum, sourceId) {
         var bb1 = page.evaluate(function () {
             return document.getElementsByTagName('html')[0].getBoundingClientRect();
         });
-        page.zoomFactor = 2.0;
+        // page.zoomFactor = 2.0;
         page.clipRect = {
             top: 0,
             left: 0,
             width: bb.width,
             height: (bb1.height)
         };
-        page.render(output, {format: 'png', quality: 100});
+        page.render(output, {format: 'png', quality: 80});
         page.clipRect = {
             top: bb1.height,
             left: 0,
