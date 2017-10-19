@@ -30,7 +30,7 @@ page.open(address, function (status) {
     var bb = page.evaluate(function () {
         console.log("开始执行客户端js代码");
 
-        window.onload = function () {
+        // window.onload = function () {
             function carateATagWithHerf(e) {
                 var t = document.createElement("a");
                 return t.href = e, t
@@ -63,7 +63,9 @@ page.open(address, function (status) {
             }
 
             function takeShot() {
-                console.log("eme_render");
+                window.setTimeout(function(){
+                    console.log("eme_render");
+                },5000);
             }
 
             if (Element.prototype.remove = function () {
@@ -110,7 +112,7 @@ page.open(address, function (status) {
             } catch (e) {
                 console.log(e)
             } else takeShot();
-        }
+        // }
     });
 });
 
