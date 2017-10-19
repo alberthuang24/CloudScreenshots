@@ -3,7 +3,6 @@ const gm = require("gm"),
     fs = require("fs"),
     shash = require("sharp-blockhash"),
     hammingDistance = require('hamming-distance'),
-    log4 = require("log4js"),
     devNull = require('dev-null');
 const platform = process.argv[2],
     url = process.argv[3],
@@ -47,7 +46,9 @@ console.log(__dirname);
 
         }
         fs.writeFile(output + ".txt", hex.toString("hex"), {flag: 'a'});
-        fs.unlinkSync(output + "z.png");
+        if(platform == "mobile"){
+            fs.unlinkSync(output + "z.png");
+        }
     });
 }).catch(err => {
     console.log(err+"\n");

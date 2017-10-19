@@ -4,7 +4,7 @@
   "description": "网页截图",
   "main": "index.js",
   "scripts": {
-    "test": "node /data/node/YunJieTuQi/src/screen.js pc https://amii.tmall.com/ test.png",
+    "test": "node src/screen.js pc https://amii.tmall.com/ test.png",
     "p": "node_modules/.bin/phantomjs ./src/mobile.js",
     "build": "babel src -d dist"
   },
