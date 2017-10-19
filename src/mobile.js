@@ -77,7 +77,7 @@ page.open(address, function (status) {
             function takeShot() {
                 window.setTimeout(function () {
                     console.log("eme_render");
-                }, 1000);
+                }, 10000);
             }
 
             if (Element.prototype.remove = function () {
