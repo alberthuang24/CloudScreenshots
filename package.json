@@ -4,7 +4,7 @@
   "description": "网页截图",
   "main": "index.js",
   "scripts": {
-    "test": "node /data/node/YunJieTuQi/src/screen.js pc https://subject.tmall.com/subject/subject.htm?spm=a221t.1812074.2005984841.30.5d6fb78ftoBG9b&abbucket=&tailer=1&actId=15197912&acm=301169.1003.1.231982&resId=70290&abtest=&wh_header=1&pos=1&header=1&id=8597292&scm=1003.1.301169.ACTIVITY_15197912_231982&gccpm=15197912.101.2.subject-0.70290.70290&wh_tailer=1 test.png",
+    "test": "node /data/node/YunJieTuQi/src/screen.js pc https://amii.tmall.com/ test.png",
     "p": "node_modules/.bin/phantomjs ./src/mobile.js",
     "build": "babel src -d dist"
   },
