@@ -5,7 +5,7 @@ var page = require('webpage').create(),
 
 address = system.args[1];
 output = system.args[2];
-page.viewportSize = {width: 1080, height: 100000000};
+page.viewportSize = {width: 1080, height: 700};
 // page.settings.userAgent = 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1';
 page.onConsoleMessage = function (msg, lineNum, sourceId) {
     console.log('CONSOLE: ' + msg + ' (from line #' + lineNum + ' in "' + sourceId + '")');
@@ -85,7 +85,7 @@ page.open(address, function (status) {
                 }, NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
                     for (var e = this.length - 1; e >= 0; e--)this[e] && this[e].parentElement && this[e].parentElement.removeChild(this[e])
                 }, console.log("tamper monkey is coming ..."), isMobile())try {
-                var screenHeight = (100000000 || window.screen.availHeight), step = 500, currentToTop = 0, finalHeight = 0, timer = setInterval(function (e) {
+                var screenHeight = (700 || window.screen.availHeight), step = 500, currentToTop = 0, finalHeight = 0, timer = setInterval(function (e) {
                     if (currentToTop += step, window.scrollTo(0, currentToTop), console.log("距离顶部：" + (document.body.scrollTop || document.documentElement.scrollTop), screenHeight), console.log("当前:", currentToTop, window.document.body.scrollHeight - (document.body.scrollTop || document.documentElement.scrollTop), screenHeight), currentToTop >= e || window.document.body.scrollHeight - (document.body.scrollTop || document.documentElement.scrollTop) <= screenHeight) {
                         clearInterval(timer),
                             console.log("已滚动到目标底部: " + window.document.body.scrollHeight + "（正文总高）; " + (document.body.scrollTop || document.documentElement.scrollTop) + "（到正文顶部距离）; "),
