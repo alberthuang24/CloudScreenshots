@@ -9,13 +9,13 @@ const platform = process.argv[2],
     output = process.argv[4];
 hash = process.argv[5];
 
-console.log(platform);
-console.log(__dirname);
+
 (new Promise((resolve, reject) => {
-    console.log(`phantomjs ${__dirname}/${platform}.js ${url} ${output}`);
+    console.log(`phantomjs ${__dirname}/${platform}.js '${url}' ${output}`);
     child_process.exec(`phantomjs ${__dirname}/${platform}.js '${url}' ${output}`, (error, stdout, stderr) => {
         if (error) {
             reject(error);
+            console.log(error,stdout,stderr);
         }
         resolve(stdout);
     });
