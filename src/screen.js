@@ -15,7 +15,7 @@ hash = process.argv[5];
     child_process.exec(`phantomjs ${__dirname}/${platform}.js '${url}' ${output}`, (error, stdout, stderr) => {
         if (error) {
             reject(error);
-            console.log(error,stdout,stderr);
+            console.log(error, stdout, stderr);
         }
         resolve(stdout);
     });
@@ -38,20 +38,20 @@ hash = process.argv[5];
     return shash(output).toBlockhash();
 }).then(hex => {
     return new Promise((resolve, reject) => {
-        try {
-            if (hash && (hammingDistance(hash, hex.toString("hex")) < 10)) {
-                return reject("the images already exist");
-            }
-        } catch (e) {
+        // try {
+            // if (hash && (hammingDistance(hash, hex.toString("hex")) < 10)) {
+            //     return reject("the images already exist");
+            // }
+        // } catch (e) {
 
-        }
+        // }
         fs.writeFile(output + ".txt", hex.toString("hex"), {flag: 'a'});
-        if(platform == "mobile"){
+        if (platform == "mobile") {
             fs.unlinkSync(output + "z.png");
         }
     });
 }).catch(err => {
-    console.log(err+"\n");
+    console.log(err + "\n");
     fs.writeFile("log", err, {flag: 'a'});
     fs.unlinkSync(output);
     fs.unlinkSync(output + "z.png");
