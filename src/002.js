@@ -58,7 +58,7 @@ const crawler = (() => {
         skipDuplicates: false,
         method: 'get',
         headers: {
-            Cookie: 'PHPSESSID=u7nlj0ah5nqapuhu6ff5lrpqa0',
+            Cookie: 'PHPSESSID=lnvmfshsk6cklv403tk4r9c6k1',
         },
         callback: function (error, res, done) {
             const crawlerCallback = res.options.crawlerCallback;
@@ -69,7 +69,7 @@ const crawler = (() => {
                 logger.error(`任务出错 "${res.options.uri}"`);
                 return done();
             }
-            console.log(`任务完成 "${res.options.uri}"`);
+            // console.log(`任务完成 "${res.options.uri}"`);
             return crawlerCallback ? crawlerCallback.call(this, error, res, done) : done();
         }
     };
@@ -78,16 +78,16 @@ const crawler = (() => {
     // 队列
     const crawlerQueue2 = new Crawler(options);
     crawlerQueue.on('schedule', options => {
-        console.log(`注册任务 "${options.uri}"`);
+        // console.log(`注册任务 "${options.uri}"`);
         // logger.info(`注册任务 "${options.uri}"`);
     });
     crawlerQueue.on('request', options => {
         // logger.info(`开始任务 "${options.uri}"`);
-        console.log(`开始任务 "${options.uri}"`);
+        // console.log(`开始任务 "${options.uri}"`);
     });
     crawlerQueue.on('drain', () => {
         // logger.info(`任务结束`);
-        console.log(`任务结束`);
+        // console.log(`任务结束`);
     });
 
     // 列表
@@ -100,17 +100,17 @@ const crawler = (() => {
                 console.log($(el).children('td:last-child').children('a').eq(0).attr('href'));
                 return "http://crm.pianor.co/" + $(el).children('td:last-child').children('a').eq(0).attr('href');
             }).get();
+
             // 下一页链接
             const nextHref = $('.pager a:contains("下一页")').attr('href');
             if (detailsUrl.length) detailsCrawler(detailsUrl);
-            if (nextHref) listCrawler(`http://crm.oppein.cn${nextHref}`);
+            // if (nextHref) listCrawler(`http://crm.oppein.cn${nextHref}`);
             return done();
         };
 
         // 方法
         return uris => {
             uris.map(uri => {
-                console.log(uri);
                 crawlerQueue.queue({uri, crawlerCallback});
             })
         };
@@ -119,70 +119,62 @@ const crawler = (() => {
 
     // 详情
     const detailsCrawler = (() => {
+
         // 剔除空格
         console.log("开始");
-        const escaped = (() => {
+        const im = (string) => {
+            if (string) {
+                var s = string.split("：");
+                return s[1] || s[0];
+            }
+            return "";
+        };
+        const escaped = ((str) => {
             var trimReg = /(^\s*)|(\s*$)/g;
             var filterSpaceReg = /(^\s*)|(\s*$)|(\s(?=\s))/g;
-            return str => {
-                str = str.replace(trimReg, "");
-                const strArray = str.split('\n');
-                let returnStrArray = [];
-                for (var i = 0, len = strArray.length; i < len; i++) {
-                    const item = strArray[i].replace(filterSpaceReg, "");
-                    if (item) {
-                        returnStrArray.push(item)
-                    }
-                }
-                if (returnStrArray.length > 1) {
-                    return returnStrArray;
-                } else {
-                    return returnStrArray[0];
-                }
-            }
-        })();
+            return (im(str)).replace(/\n|\t|\s/g,"");
+        });
         // 回调
         const crawlerCallback = (error, res, done) => {
             const $ = res.$;
             // dom对象
-            const $customerInformation = $('body > div > div:nth-child(1) > fieldset > div > table');
-            const $callRecords = $('body div.padding20  div.margin-top-10:nth-child(4) > table   tr  td  div');
-            const $customerOrder = $('body > div.container.clear > div.content > div.padding20 > div:nth-child(6) > table ');
-            const $customerOperationLog = $('body > div.container.clear > div.content > div.padding20 > div:nth-child(8) > table   tr  td  div');
+            const $customerInformation = $('fieldset > div > table');
 
-
-            if (!$customerInformation.length && !$callRecords.length && !$customerOrder.length && !$customerOperationLog.length) {
+            if (!$customerInformation.length) {
                 return done();
             }
 
             // 存储
             let resData = {};
+            var id = (res.options.uri.split("?")[1]).split("id=")[1];
+            console.log(id, "query_debug");
+            // body > div > div:nth-child(1) > fieldset > div > table
             // 客户信息
             resData.customerInformation = {
                 // 客户编号
-                "id": escaped($customerInformation.find('tr:nth-child(1) > td:nth-child(2)').text()),
+                "id": id,
                 // 客户来源
-                "source": escaped($customerInformation.find('tr:nth-child(1) > td:nth-child(4)').text()),
+                "source": escaped($customerInformation.find('tr:nth-child(5) > td:nth-child(1)').text()),
                 // 姓名
-                "name": escaped($customerInformation.find('tr:nth-child(2) > td:nth-child(2)').text()),
+                "name": escaped($customerInformation.find('tr:nth-child(1) > td:nth-child(1)').text()),
                 // 性别
-                "sex": escaped($customerInformation.find('tr:nth-child(2) > td:nth-child(4)').text()),
+                "sex": escaped($customerInformation.find('tr:nth-child(1) > td:nth-child(4)').text()),
                 // 年龄
-                "age": escaped($customerInformation.find('tr:nth-child(2) > td:nth-child(6)').text()),
+                "age": escaped($customerInformation.find('tr:nth-child(1) > td:nth-child(5)').text()),
                 // 手机号码
-                "phone": escaped($customerInformation.find('tr:nth-child(3) > td:nth-child(2) > input').val()),
+                "phone": escaped($customerInformation.find('tr:nth-child(2) > td:nth-child(1)').text()),
                 // 备注联系方式
-                "remarksContact": escaped($customerInformation.find('tr:nth-child(3) > td:nth-child(4)').text()),
+                "remarksContact": escaped($customerInformation.find('tr:nth-child(2) > td:nth-child(2)').text()),
                 // QQ
-                "QQ": escaped($customerInformation.find('tr:nth-child(3) > td:nth-child(6)').text()),
+                "QQ": "",
                 // 微信
-                "weChat": escaped($customerInformation.find('tr:nth-child(3) > td:nth-child(8)').text()),
+                "weChat": escaped($customerInformation.find('tr:nth-child(2) > td:nth-child(3)').text()),
                 // 地址
-                "address": escaped($customerInformation.find('tr:nth-child(4) > td:nth-child(2)').text()),
+                "address": escaped($customerInformation.find('tr:nth-child(3) > td').text()),
                 // 所属小区
-                "district": escaped($customerInformation.find('tr:nth-child(4) > td:nth-child(4)').text()),
+                "district": "",
                 // 测量备注
-                "measurementNotes": escaped($customerInformation.find('tr:nth-child(4) > td:nth-child(6)').text()),
+                "measurementNotes": "",
                 // 装修类型
                 "decorationType": escaped($customerInformation.find('tr:nth-child(5) > td:nth-child(2)').text()),
                 // 是否在专卖店了解过
@@ -200,20 +192,20 @@ const crawler = (() => {
                 // 上一次联系时间
                 "lastContactTime": escaped($customerInformation.find('tr:nth-child(7) > td:nth-child(6)').text()),
                 // 客户状态
-                "customerStatus": escaped($customerInformation.find('tr:nth-child(8) > td:nth-child(2)').text()),
+                "customerStatus": escaped($customerInformation.find('tr:nth-child(6) > td:nth-child(1)').text()),
                 // 申请备注
-                "applicationNote": escaped($customerInformation.find('tr:nth-child(8) > td:nth-child(4)').text()),
+                "applicationNote": escaped($customerInformation.find('tr:nth-child(7) > td > textarea').val()),
                 // 回访时间
                 "visitTime": escaped($customerInformation.find('tr:nth-child(9) > td:nth-child(2)').text()),
                 // 客户备注
                 "customerNotes": escaped($customerInformation.find('tr:nth-child(9) > td:nth-child(4)').text()),
             };
 
-            if (escaped($customerInformation.find('tr:nth-child(9) > td:nth-child(2)').text())) {
-                var bool = escaped($customerInformation.find('tr:nth-child(9) > td:nth-child(2)').text()).indexOf(":");
-                var key = bool == -1 ? "customerNotes" : "visitTime";
-                resData.customerInformation[key] = escaped($customerInformation.find('tr:nth-child(9) > td:nth-child(2)').text());
-            }
+            // if (escaped($customerInformation.find('tr:nth-child(9) > td:nth-child(2)').text())) {
+            //     var bool = escaped($customerInformation.find('tr:nth-child(9) > td:nth-child(2)').text()).indexOf(":");
+            //     var key = bool == -1 ? "customerNotes" : "visitTime";
+            //     resData.customerInformation[key] = escaped($customerInformation.find('tr:nth-child(9) > td:nth-child(2)').text());
+            // }
 
             // 地址 id
             // districtCrawler(resData.customerInformation.id, resData);
@@ -278,7 +270,7 @@ const transfer = (() => {
 
     const uri = 'http://sys.lif8.cn:8090/index.php/admin_api/AdminInterface/rootInterface';
     // const uri = 'http://192.168.9.222/lif8_b3/public/index.php/admin_api/AdminInterface/rootInterface';
-    const interface = 'PublicAction/importOppeinData';
+    const interface = 'PublicAction/importPData';
     return resData => {
         var params = JSON.stringify({data: resData});
         var buffer = new Buffer(params);

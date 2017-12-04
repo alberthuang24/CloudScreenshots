@@ -33,7 +33,7 @@ page.open(address, function (status) {
         // window.onload = function () {
         function carateATagWithHerf(e) {
             var t = document.createElement("a");
-            return t.href = e,t
+            return t.href = e, t
         }
 
         function isMobile() {

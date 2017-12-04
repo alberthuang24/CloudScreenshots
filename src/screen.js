@@ -39,9 +39,9 @@ hash = process.argv[5];
 }).then(hex => {
     return new Promise((resolve, reject) => {
         // try {
-            // if (hash && (hammingDistance(hash, hex.toString("hex")) < 10)) {
-            //     return reject("the images already exist");
-            // }
+        // if (hash && (hammingDistance(hash, hex.toString("hex")) < 10)) {
+        //     return reject("the images already exist");
+        // }
         // } catch (e) {
 
         // }
