@@ -16,10 +16,11 @@ const qiniuUpload = new (require("./qiniu/index"));
 
 const queue = kue.createQueue(kueConfig);
 
+const uploadQueue = kue.createQueue();
+
 kue.app.listen(3000); //监听3000端口
 
 initQueue();
-
 
 /**
  * 运行截图任务
@@ -124,15 +125,16 @@ queue.process('screen', function (job, ctx, done) {
                 console.log(e, 'xxxxxxxxx');
             }
         }
+
         let uploadJob = job.data;
         uploadJob['path'] = path;
-        queue.create('upload', uploadJob).save();
+        uploadQueue.create('upload', uploadJob).save();
         mysql.update(`em_cloud_screenshots:${job.data.id}`, {md5: `"${hash}"`});
         done();
     });
 });
 
-queue.process('upload', function (job, ctx, done) {
+uploadQueue.process('upload', function (job, ctx, done) {
     upload(job.data).then(r => {
         done();
     });
