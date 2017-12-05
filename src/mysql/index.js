@@ -20,6 +20,7 @@ module.exports = class Mysql {
     }
 
     query(queryString) {
+        console.log(' start query ', queryString);
         return new Promise((resolve, reject) => {
             this.connection().then(c => {
                 c.query(queryString, (error, results, fields) => {
@@ -30,5 +31,33 @@ module.exports = class Mysql {
                 });
             })
         })
+    }
+
+    update(tableId, values) {
+        const [table, id] = tableId.split(':');
+
+        let queryString = `update \`${table}\` set `;
+        for (let i in values) {
+            if (values.hasOwnProperty(i)) {
+                queryString += `\`${i}\`=${values[i]}`
+            }
+        }
+
+        queryString += ` where id=${id}`;
+
+        return this.query(queryString);
+    }
+
+    insert(table, data) {
+        let keys = [];
+        let values = [];
+        for (let i in data) {
+            if (data.hasOwnProperty(i)) {
+                keys.push(`\`${i}\``);
+                values.push(data[i]);
+            }
+        }
+        let queryString = `insert into \`${table}\` (${keys.join(",")}) values(${values.join(",")})`;
+        return this.query(queryString);
     }
 };

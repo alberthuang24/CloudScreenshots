@@ -1,4 +1,4 @@
-const gm = require("gm"),
+const myGm = require("./gm/index"),
     fs = require("fs"),
     shash = require("sharp-blockhash"),
     hammingDistance = require('hamming-distance'),
@@ -6,14 +6,20 @@ const gm = require("gm"),
 const phantom = require('phantom');
 const pcScreen = require("./handler/pc");
 const kueConfig = require("./config/kue");
+const path = require('path')
 const mysql = new (require("./mysql/index"))();
 const mobileScreen = require("./handler/mobile");
 const screenConfig = require("./config/screen");
 const kue = require("kue");
+const md5 = require("md5");
+const qiniuUpload = new (require("./qiniu/index"));
+
 const queue = kue.createQueue(kueConfig);
+
 kue.app.listen(3000); //监听3000端口
 
 initQueue();
+
 
 /**
  * 运行截图任务
@@ -24,32 +30,110 @@ initQueue();
 async function handler(o, platform) {
     platform = platform === 'mobile' ? (new mobileScreen(o.url)) : (new pcScreen(o.url));
     const fileName = await (platform).handler();
-    console.log(fileName);
+
+    let mPath = path.resolve(__dirname, '..');
+
+    mPath = `${mPath}/${fileName}`;
+
+    await mysql.update(`em_cloud_screenshots:${o.id}`, {count: o.count + 1});
 
     //上传处理
-    return await true;
+    return await mPath;
 }
 
-//从mysql的任务列表 create 到 队列
+//从mysql的任务列表 create 到 队
 async function initQueue() {
     const results = await mysql.query("select * from em_cloud_screenshots");
     results.forEach(item => {
-        queue.create(item.platform, item).save();
+        queue.create('screen', item).save();
     })
 }
 
-queue.process('mobile', function (job, ctx, done) {
-    handler(job.data, 'mobile').then(b => {
-        if (b === true) {
-            done();
+
+//上传任务
+async function upload(object) {
+    const g = new myGm(object.path);
+    const shrinkPath = path.resolve(__dirname, '..') + "/shrink_" + Math.ceil(Math.random() * 10000000000000000) + '.' + screenConfig.format;
+    // const thumbPath = path.resolve(__dirname, '..') + "/thumb_" + Math.ceil(Math.random() * 10000000000000000) + '.' + screenConfig.format;
+    await g.resize(screenConfig.shrink_ratio, shrinkPath);
+    // await g.resize(screenConfig.display_ratio, thumbPath);
+    console.log("开始上传");
+
+    let [shrinkName, originName] = await Promise.all([
+        qiniuUpload.upload(md5(shrinkPath) + "." + screenConfig.format, shrinkPath, "yimai"),
+        qiniuUpload.upload(md5(object.path) + "." + screenConfig.format, object.path, "private")
+    ]);
+
+    console.log("上传结束");
+    let date = new Date();
+    let size = await g.getSize();
+
+    console.log(size);
+    //删除完毕后保存数据库
+    let cases_details = {
+        cd_platform: `"${object.platform}"`,
+        cd_year: date.getFullYear(),
+        cd_month: date.getMonth(),
+        cd_day: date.getDate(),
+        cd_title: `"${object.title}"`,
+        cd_origin_key: `"${originName}"`,
+        cd_shrink_key: `"${shrinkName}"`,
+        cd_thumb_key: `"${shrinkName}"`,
+        cd_ext: `"${screenConfig.format}"`,
+        cd_size: await g.fileSize(),
+        cd_height: size.height,
+        cd_width: size.width
+    };
+    console.log(cases_details);
+    await mysql.insert("em_case_details", cases_details);
+
+    return await new Promise((resolve, reject) => {
+        //上传成功删除本地图片
+        fs.unlink(shrinkPath, (error) => {
+            console.log(error);
+            // fs.unlink(thumbPath, (error) => {
+            fs.unlink(object.path, (error) => {
+                console.log(error);
+                resolve();
+            })
+            // })
+        });
+    });
+}
+
+
+queue.process('screen', function (job, ctx, done) {
+    handler(job.data, job.data.platform).then(async path => {
+        const g = new myGm(path);
+        let hash = await g.hash();
+        hash = hash.toString('hex');
+
+        if (job.data.md5) {
+            try {
+                if (hammingDistance(job.data.md5, hash) === 0) {
+                    //重复
+                    await new Promise((resolve, reject) => {
+                        fs.unlink(path, (error) => {
+                            resolve();
+                        });
+                    });
+                    console.log("重复");
+                    return;
+                }
+            } catch (e) {
+                console.log(e, 'xxxxxxxxx');
+            }
         }
+        let uploadJob = job.data;
+        uploadJob['path'] = path;
+        queue.create('upload', uploadJob).save();
+        // mysql.update(`em_cloud_screenshots:${job.data.id}`, {md5: `"${hash}"`});
+        done();
     });
 });
 
-queue.process('pc', function (job, ctx, done) {
-    handler(job.data, 'pc').then(b => {
-        if (b === true) {
-            done();
-        }
+queue.process('upload', function (job, ctx, done) {
+    upload(job.data).then(r => {
+        done();
     });
 });
