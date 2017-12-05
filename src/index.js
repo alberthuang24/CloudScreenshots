@@ -127,7 +127,7 @@ queue.process('screen', function (job, ctx, done) {
         let uploadJob = job.data;
         uploadJob['path'] = path;
         queue.create('upload', uploadJob).save();
-        // mysql.update(`em_cloud_screenshots:${job.data.id}`, {md5: `"${hash}"`});
+        mysql.update(`em_cloud_screenshots:${job.data.id}`, {md5: `"${hash}"`});
         done();
     });
 });
