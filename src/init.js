@@ -8,9 +8,12 @@ const queue = kue.createQueue(kueConfig);
 async function initQueue() {
     const results = await mysql.query("select * from em_cloud_screenshots");
     results.forEach(item => {
+        console.log(item);
         queue.create('screen', item).save();
     })
 }
 
 
-initQueue();
+initQueue().then(r => {
+
+});

@@ -20,7 +20,7 @@ const uploadQueue = kue.createQueue();
 
 kue.app.listen(3000); //监听3000端口
 
-initQueue();
+// initQueue();
 
 /**
  * 运行截图任务
@@ -121,7 +121,7 @@ queue.process('screen', function (job, ctx, done) {
         let uploadJob = job.data;
         uploadJob['path'] = path;
         uploadQueue.create('upload', uploadJob).save();
-        mysql.update(`em_cloud_screenshots:${job.data.id}`, {md5: `"${hash}"`});
+        mysql.update(`em_cloud_screenshots:${job.data.id}`, {md5: `"${hash}"`, last_time: new Date().getTime()});
         done();
     });
 });
