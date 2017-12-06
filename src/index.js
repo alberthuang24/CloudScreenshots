@@ -42,14 +42,6 @@ async function handler(o, platform) {
     return await mPath;
 }
 
-//从mysql的任务列表 create 到 队
-async function initQueue() {
-    const results = await mysql.query("select * from em_cloud_screenshots");
-    results.forEach(item => {
-        queue.create('screen', item).save();
-    })
-}
-
 
 //上传任务
 async function upload(object) {
