@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "dev-null": "^0.1.1",
+    "getmac": "^1.2.1",
     "gm": "^1.23.0",
     "hamming-distance": "^1.0.0",
     "jpeg-js": "^0.3.3",

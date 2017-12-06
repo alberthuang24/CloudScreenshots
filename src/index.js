@@ -11,6 +11,7 @@ const mysql = new (require("./mysql/index"))();
 const mobileScreen = require("./handler/mobile");
 const screenConfig = require("./config/screen");
 const kue = require("kue");
+const mac = require("getmac");
 const md5 = require("md5");
 const qiniuUpload = new (require("./qiniu/index"));
 
@@ -19,6 +20,48 @@ const queue = kue.createQueue(kueConfig);
 const uploadQueue = kue.createQueue();
 
 kue.app.listen(3000); //监听3000端口
+
+
+mac.getMac((err, macaddress) => {
+    if (err) {
+        return console.error(err);
+    }
+    queue.process('screen', function (job, ctx, done) {
+        handler(job.data, job.data.platform).then(async path => {
+            const g = new myGm(path);
+            let hash = await g.hash();
+            hash = hash.toString('hex');
+
+            if (job.data.md5) {
+                try {
+                    if (hammingDistance(job.data.md5, hash) === 0) {
+                        //重复
+                        await new Promise((resolve, reject) => {
+                            fs.unlink(path, (error) => {
+                                resolve();
+                            });
+                        });
+                        console.log("重复");
+                        return;
+                    }
+                } catch (e) {
+                    console.log(e, 'xxxxxxxxx');
+                }
+            }
+
+            let uploadJob = job.data;
+            uploadJob['path'] = path;
+            uploadQueue.create(`${macaddress}upload`, uploadJob).save();
+            mysql.update(`em_cloud_screenshots:${job.data.id}`, {md5: `"${hash}"`, last_time: new Date().getTime()});
+            done();
+        });
+    });
+    uploadQueue.process(`${macaddress}upload`, function (job, ctx, done) {
+        upload(job.data).then(r => {
+            done();
+        });
+    });
+});
 
 // initQueue();
 
@@ -93,41 +136,3 @@ async function upload(object) {
         });
     });
 }
-
-
-queue.process('screen', function (job, ctx, done) {
-    handler(job.data, job.data.platform).then(async path => {
-        const g = new myGm(path);
-        let hash = await g.hash();
-        hash = hash.toString('hex');
-
-        if (job.data.md5) {
-            try {
-                if (hammingDistance(job.data.md5, hash) === 0) {
-                    //重复
-                    await new Promise((resolve, reject) => {
-                        fs.unlink(path, (error) => {
-                            resolve();
-                        });
-                    });
-                    console.log("重复");
-                    return;
-                }
-            } catch (e) {
-                console.log(e, 'xxxxxxxxx');
-            }
-        }
-
-        let uploadJob = job.data;
-        uploadJob['path'] = path;
-        uploadQueue.create('upload', uploadJob).save();
-        mysql.update(`em_cloud_screenshots:${job.data.id}`, {md5: `"${hash}"`, last_time: new Date().getTime()});
-        done();
-    });
-});
-
-uploadQueue.process('upload', function (job, ctx, done) {
-    upload(job.data).then(r => {
-        done();
-    });
-});
