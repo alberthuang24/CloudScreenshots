@@ -39,9 +39,12 @@ module.exports = class Mysql {
         let queryString = `update \`${table}\` set `;
         for (let i in values) {
             if (values.hasOwnProperty(i)) {
-                queryString += `\`${i}\`=${values[i]}`
+                queryString += `\`${i}\`=${values[i]} ,`
             }
         }
+
+
+        queryString = queryString.substring(0,queryString.length-1);
 
         queryString += ` where id=${id}`;
 

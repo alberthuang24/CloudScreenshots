@@ -51,8 +51,11 @@ mac.getMac((err, macaddress) => {
 
             let uploadJob = job.data;
             uploadJob['path'] = path;
-            uploadQueue.create(`${macaddress}upload`, uploadJob).save();
-            mysql.update(`em_cloud_screenshots:${job.data.id}`, {md5: `"${hash}"`, last_time: new Date().getTime()});
+            uploadQueue.create(`${macaddress}upload`, uploadJob).attempts(3).ttl(600000).save();
+            mysql.update(`em_cloud_screenshots:${job.data.id}`, {
+                md5: `"${hash}"`,
+                last_time: new Date().getTime().toString().substring(0, 10)
+            });
             done();
         });
     });
