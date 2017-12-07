@@ -2,20 +2,19 @@ const mysql = require("mysql");
 const mysqlConfig = require("../config/mysql");
 module.exports = class Mysql {
 
+    constructor() {
+        this.pool = mysql.createPool(mysqlConfig);
+    }
+
     connection() {
         return new Promise((resolve, reject) => {
-            if (Mysql._connect === undefined) {
-                const connection = mysql.createConnection(mysqlConfig);
-                connection.connect((err) => {
-                    if (err) {
-                        reject(err.stack)
-                    }
-                    resolve(connection);
-                });
-                Mysql._connect = connection;
-            } else {
-                return resolve(Mysql._connect)
-            }
+            this.pool.getConnection(function (err, connection) {
+                if (err) {
+                    console.log(err);
+                    reject(err);
+                }
+                resolve(connection);
+            });
         });
     }
 
@@ -28,6 +27,7 @@ module.exports = class Mysql {
                         reject(error);
                     }
                     resolve(results);
+                    c.release();
                 });
             })
         })
@@ -44,7 +44,7 @@ module.exports = class Mysql {
         }
 
 
-        queryString = queryString.substring(0,queryString.length-1);
+        queryString = queryString.substring(0, queryString.length - 1);
 
         queryString += ` where id=${id}`;
 
