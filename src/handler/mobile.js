@@ -51,7 +51,8 @@ module.exports = class MobileScreen extends Handler {
                                 reject(error);
                             }
                             fs.unlink(zoutput, error => {
-                                return resolve(output)
+                                resolve(output)
+                                return instance.exit();
                             });
                         })
                     }, 1000)
@@ -79,6 +80,7 @@ module.exports = class MobileScreen extends Handler {
 
                         await page.render(output, {format: 'png', quality: 80});
                         resolve(output);
+                        return instance.exit();
                     }, 1000)
                 }
             });

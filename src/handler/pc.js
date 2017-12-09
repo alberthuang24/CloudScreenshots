@@ -9,7 +9,6 @@ module.exports = class PcScreen extends Handler {
             const instance = await phantom.create();
             const page = await instance.createPage();
 
-
             await page.property('viewportSize', {width: 1920, height: 1080});
 
             page.on('onConsoleMessage', function (msg, lineNum, sourceId) {
@@ -30,14 +29,13 @@ module.exports = class PcScreen extends Handler {
                         });
                         const png = await page.render(output, {format: 'png', quality: 80});
                         page.close();
-                        return resolve(output);
+                        resolve(output);
+                        return instance.exit();
                     }, 1000)
                 }
             });
 
-
             const status = await page.open(url);
-
 
             //开始
             await page.evaluateAsync(function () {

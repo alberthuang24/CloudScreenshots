@@ -19,7 +19,7 @@ const queue = kue.createQueue(kueConfig);
 
 const uploadQueue = kue.createQueue();
 
-kue.app.listen(3000); //监听3000端口
+// kue.app.listen(3000); //监听3000端口
 
 mac.getMac((err, macaddress) => {
     if (err) {
@@ -60,12 +60,12 @@ mac.getMac((err, macaddress) => {
     });
     uploadQueue.process(`${macaddress}upload`, function (job, ctx, done) {
         upload(job.data).then(r => {
+
+            console.log(r, '上传完成任务结束');
             done();
         });
     });
 });
-
-// initQueue();
 
 /**
  * 运行截图任务
@@ -122,7 +122,9 @@ async function upload(object) {
         cd_height: size.height,
         cd_width: size.width
     };
+
     console.log(cases_details);
+
     await mysql.insert("em_case_details", cases_details);
 
     return await new Promise((resolve, reject) => {
@@ -132,6 +134,7 @@ async function upload(object) {
             // fs.unlink(thumbPath, (error) => {
             fs.unlink(object.path, (error) => {
                 console.log(error);
+                console.log(object.path);
                 resolve();
             })
             // })
