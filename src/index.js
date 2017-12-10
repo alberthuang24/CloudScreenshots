@@ -19,7 +19,7 @@ const queue = kue.createQueue(kueConfig);
 
 const uploadQueue = kue.createQueue();
 
-kue.app.listen(3000); //监听3000端口
+// kue.app.listen(3000); //监听3000端口
 
 mac.getMac((err, macaddress) => {
     if (err) {
