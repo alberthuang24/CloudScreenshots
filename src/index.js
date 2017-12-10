@@ -19,7 +19,7 @@ const queue = kue.createQueue(kueConfig);
 
 const uploadQueue = kue.createQueue();
 
-// kue.app.listen(3000); //监听3000端口
+kue.app.listen(3000); //监听3000端口
 
 mac.getMac((err, macaddress) => {
     if (err) {
@@ -50,7 +50,7 @@ mac.getMac((err, macaddress) => {
 
             let uploadJob = job.data;
             uploadJob['path'] = path;
-            uploadQueue.create(`${macaddress}upload`, uploadJob).attempts(3).ttl(600000).save();
+            uploadQueue.create(`${macaddress}upload`, uploadJob).attempts(3).save();
             mysql.update(`em_cloud_screenshots:${job.data.id}`, {
                 md5: `"${hash}"`,
                 last_time: new Date().getTime().toString().substring(0, 10)
