@@ -6,7 +6,7 @@ const myGm = require("./gm/index"),
 const phantom = require('phantom');
 const pcScreen = require("./handler/pc");
 const kueConfig = require("./config/kue");
-const path = require('path')
+const path = require('path');
 const mysql = new (require("./mysql/index"))();
 const mobileScreen = require("./handler/mobile");
 const screenConfig = require("./config/screen");
@@ -50,7 +50,7 @@ mac.getMac((err, macaddress) => {
 
             let uploadJob = job.data;
             uploadJob['path'] = path;
-            uploadQueue.create(`${macaddress}upload`, uploadJob).attempts(3).save();
+            uploadQueue.create(`${macaddress}upload`, uploadJob).attempts(3).ttl(600000).save();
             mysql.update(`em_cloud_screenshots:${job.data.id}`, {
                 md5: `"${hash}"`,
                 last_time: new Date().getTime().toString().substring(0, 10)
