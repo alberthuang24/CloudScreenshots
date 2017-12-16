@@ -3,7 +3,7 @@
 截图像素可达2560
 dpi 高达 300
 # 安装
-git clone https://gitee.com/em168/YunJieTuQi.git
+git clone https://github.com/HongjiangHuang/CloudScreenshots.git
 
 npm install
 #mac os
